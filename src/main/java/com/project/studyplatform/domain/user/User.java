@@ -43,4 +43,11 @@ public class User extends BaseEntity {
 
     }
 
+    public void editProfile(String name, String email, String password, String nickname, Status status) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.status = status;
+    }
 }
