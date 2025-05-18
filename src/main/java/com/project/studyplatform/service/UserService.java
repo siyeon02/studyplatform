@@ -2,8 +2,10 @@ package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.user.dto.request.LoginReqDto;
 import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
+import com.project.studyplatform.controller.user.dto.request.UserProfileEditReqDto;
 import com.project.studyplatform.controller.user.dto.response.LoginRespDto;
 import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
+import com.project.studyplatform.controller.user.dto.response.UserProfileRespDto;
 import com.project.studyplatform.domain.BaseEntity;
 import com.project.studyplatform.domain.user.User;
 import com.project.studyplatform.domain.user.repository.UserRepository;
@@ -44,4 +46,19 @@ public class UserService {
         return new SignupRespDto(savedUser);
     }
 
+    public UserProfileRespDto findUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        return new UserProfileRespDto(user);
+    }
+
+    public Void userProfileEdit(Long userId, UserProfileEditReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        user.editProfile(dto.getName(), dto.getEmail(), dto.getPassword(), dto.getNickname(), dto.getStatus());
+        userRepository.save(user);
+
+        return null;
+    }
 }
