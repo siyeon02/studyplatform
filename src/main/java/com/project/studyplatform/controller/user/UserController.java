@@ -1,6 +1,7 @@
 package com.project.studyplatform.controller.user;
 
 import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
+import com.project.studyplatform.controller.user.dto.request.UserDeleteReqDto;
 import com.project.studyplatform.controller.user.dto.request.UserProfileEditReqDto;
 import com.project.studyplatform.controller.user.dto.response.UserProfileRespDto;
 import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
@@ -34,6 +35,12 @@ public class UserController {
     @PutMapping("/users/profile")
     public ResponseEntity<ApiResult<Void>> editUser(@AuthenticationPrincipal(expression = "user") User user, @Valid @RequestBody UserProfileEditReqDto dto) {
         userService.userProfileEdit(user.getId(), dto);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
+    }
+
+    @DeleteMapping("/users/profile")
+    public ResponseEntity<ApiResult<Void>> deleteUser(@AuthenticationPrincipal(expression = "user") User user, @Valid @RequestBody UserDeleteReqDto dto) {
+        userService.deleteUser(user.getId(), dto);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
     }
 

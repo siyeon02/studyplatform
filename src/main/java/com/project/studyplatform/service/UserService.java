@@ -1,6 +1,7 @@
 package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
+import com.project.studyplatform.controller.user.dto.request.UserDeleteReqDto;
 import com.project.studyplatform.controller.user.dto.request.UserProfileEditReqDto;
 import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
 import com.project.studyplatform.controller.user.dto.response.UserProfileRespDto;
@@ -55,6 +56,18 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         user.editProfile(dto.getName(), dto.getEmail(), dto.getPassword(), dto.getNickname(), dto.getStatus());
         userRepository.save(user);
+
+    }
+
+    public void deleteUser(Long userId, UserDeleteReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.PASSWORD_NOT_MATCHING);
+        }
+
+        userRepository.delete(user);
 
     }
 }
