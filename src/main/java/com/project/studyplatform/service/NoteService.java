@@ -4,6 +4,7 @@ import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
+import com.project.studyplatform.controller.note.dto.response.NoteInfoRespDto;
 import com.project.studyplatform.domain.note.Note;
 import com.project.studyplatform.domain.note.repository.NoteRepository;
 import com.project.studyplatform.domain.user.User;
@@ -51,5 +52,15 @@ public class NoteService {
 
         return new NoteEditRespDto(note,user);
 
+    }
+
+    public NoteInfoRespDto retrieveNote(Long userId, Long noteId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException((ErrorCode.USER_NOT_FOUND)));
+
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
+
+        return new NoteInfoRespDto(note, user);
     }
 }

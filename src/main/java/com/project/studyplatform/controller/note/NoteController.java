@@ -4,6 +4,7 @@ import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
+import com.project.studyplatform.controller.note.dto.response.NoteInfoRespDto;
 import com.project.studyplatform.domain.user.User;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.NoteService;
@@ -31,9 +32,15 @@ public class NoteController {
     }
 
     @PutMapping("/notes/{noteId}")
-    public ResponseEntity<ApiResult<NoteEditRespDto>> editNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId, @Valid @RequestBody NoteEditReqDto dto){
+    public ResponseEntity<ApiResult<NoteEditRespDto>> editNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId, @Valid @RequestBody NoteEditReqDto dto) {
 
         User user = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(noteService.editNote(user.getId(), noteId, dto)));
+    }
+
+    @GetMapping("/notes/{noteId}")
+    public ResponseEntity<ApiResult<NoteInfoRespDto>> retrieveNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId) {
+        User user = userDetails.getUser();
+        return ResponseEntity.status((HttpStatus.OK)).body(ApiResult.success(noteService.retrieveNote(user.getId(), noteId)));
     }
 }
