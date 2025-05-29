@@ -1,6 +1,7 @@
 package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
+import com.project.studyplatform.controller.note.dto.requst.NoteDeleteReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
@@ -51,5 +52,15 @@ public class NoteService {
 
         return new NoteEditRespDto(note,user);
 
+    }
+
+    public void deleteNote(Long userId, NoteDeleteReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Note note = noteRepository.findById(dto.getNoteId())
+                .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
+
+        noteRepository.delete(note);
     }
 }
