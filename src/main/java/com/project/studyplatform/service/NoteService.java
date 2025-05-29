@@ -54,6 +54,16 @@ public class NoteService {
 
     }
 
+    public void deleteNote(Long userId, NoteDeleteReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Note note = noteRepository.findById(dto.getNoteId())
+                .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
+
+        noteRepository.delete(note);
+    }
+
     public NoteInfoRespDto retrieveNote(Long userId, Long noteId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException((ErrorCode.USER_NOT_FOUND)));
