@@ -40,6 +40,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        log.info("🔍 [JWT 필터 진입] {} {}", request.getMethod(), request.getRequestURI());
+        log.info("🔍 [Authorization 헤더] {}", request.getHeader("Authorization"));
         HttpServletRequest httpRequest = request;
         HttpServletResponse httpResponse = response;
 
