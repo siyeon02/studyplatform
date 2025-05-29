@@ -1,10 +1,8 @@
 package com.project.studyplatform.controller.user;
 
-import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
 import com.project.studyplatform.controller.user.dto.request.UserDeleteReqDto;
 import com.project.studyplatform.controller.user.dto.request.UserProfileEditReqDto;
 import com.project.studyplatform.controller.user.dto.response.UserProfileRespDto;
-import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
 import com.project.studyplatform.domain.user.User;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.UserService;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,11 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-
-    @PostMapping("/auth/signup")
-    public ResponseEntity<ApiResult<SignupRespDto>> signup(@Valid @RequestBody SignupReqDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(userService.signup(dto)));
-    }
 
     @GetMapping("/users/profile")
     public ResponseEntity<ApiResult<UserProfileRespDto>> userProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {

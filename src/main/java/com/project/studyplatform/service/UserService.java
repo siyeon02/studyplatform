@@ -23,27 +23,6 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
 
-    @Transactional
-    public SignupRespDto signup(SignupReqDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
-        }
-
-        String encodePassword = passwordEncoder.encode(dto.getPassword());
-
-        User user = User.builder()
-                .name(dto.getName())
-                .nickname(dto.getNickname())
-                .password(encodePassword)
-                .email(dto.getEmail())
-                .status(dto.getStatus())
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        return new SignupRespDto(savedUser);
-    }
-
     public UserProfileRespDto findUserProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -51,6 +30,7 @@ public class UserService {
         return new UserProfileRespDto(user);
     }
 
+    @Transactional
     public void userProfileEdit(Long userId, UserProfileEditReqDto dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
