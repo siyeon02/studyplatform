@@ -25,7 +25,8 @@ public class NoteController {
     }
 
     @PostMapping("/notes")
-    public ResponseEntity<ApiResult<NoteCreateRespDto>> createNote(@AuthenticationPrincipal(expression = "user") User user, @Valid @RequestBody NoteCreateReqDto dto) {
+    public ResponseEntity<ApiResult<NoteCreateRespDto>> createNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody NoteCreateReqDto dto) {
+        User user = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(noteService.createNote(user.getId(), dto)));
     }
 
