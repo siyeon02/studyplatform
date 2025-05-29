@@ -38,6 +38,13 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(noteService.editNote(user.getId(), noteId, dto)));
     }
 
+    @DeleteMapping("/notes/{noteId}")
+    public ResponseEntity<ApiResult<Void>> deleteNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId, @Valid @RequestBody NoteDeleteReqDto dto){
+        User user = userDetails.getUser();
+        noteService.deleteNote(user.getId(), dto);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
+    }
+
     @GetMapping("/notes/{noteId}")
     public ResponseEntity<ApiResult<NoteInfoRespDto>> retrieveNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId) {
         User user = userDetails.getUser();
