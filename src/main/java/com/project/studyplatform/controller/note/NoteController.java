@@ -1,6 +1,7 @@
 package com.project.studyplatform.controller.note;
 
 import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
+import com.project.studyplatform.controller.note.dto.requst.NoteDeleteReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
