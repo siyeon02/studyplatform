@@ -3,6 +3,7 @@ package com.project.studyplatform.controller.note;
 import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteDeleteReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
+import com.project.studyplatform.controller.note.dto.response.AllNoteInfoRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteInfoRespDto;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -50,5 +53,12 @@ public class NoteController {
     public ResponseEntity<ApiResult<NoteInfoRespDto>> retrieveNote(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long noteId) {
         User user = userDetails.getUser();
         return ResponseEntity.status((HttpStatus.OK)).body(ApiResult.success(noteService.retrieveNote(user.getId(), noteId)));
+    }
+
+    @GetMapping("/notes/all")
+    public ResponseEntity<ApiResult<List<AllNoteInfoRespDto>>> retrieveAllNotes(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        List<AllNoteInfoRespDto> noteList =  noteService.retrieveAllNotes(user.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(noteList));
     }
 }

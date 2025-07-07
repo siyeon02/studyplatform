@@ -3,6 +3,7 @@ package com.project.studyplatform.service;
 import com.project.studyplatform.controller.note.dto.requst.NoteCreateReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteDeleteReqDto;
 import com.project.studyplatform.controller.note.dto.requst.NoteEditReqDto;
+import com.project.studyplatform.controller.note.dto.response.AllNoteInfoRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteCreateRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteInfoRespDto;
@@ -15,6 +16,9 @@ import com.project.studyplatform.ex.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +77,18 @@ public class NoteService {
                 .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
 
         return new NoteInfoRespDto(note, user);
+    }
+
+    public List<AllNoteInfoRespDto> retrieveAllNotes(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException((ErrorCode.USER_NOT_FOUND)));
+
+        List<Note> noteList = noteRepository
+                .findAllByUser(user);
+
+        return noteList.stream()
+                .map(AllNoteInfoRespDto::new)
+                .collect(Collectors.toList());
+
     }
 }
