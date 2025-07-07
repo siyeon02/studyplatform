@@ -1,11 +1,13 @@
 package com.project.studyplatform.service;
 
-import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
+import com.project.studyplatform.controller.note.dto.response.AllNoteInfoRespDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectCreateReqDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectEditReqDto;
+import com.project.studyplatform.controller.subject.dto.request.SubjectInfoReqDto;
+import com.project.studyplatform.controller.subject.dto.response.AllSubjectInfoRespDto;
 import com.project.studyplatform.controller.subject.dto.response.SubjectCreateRespDto;
 import com.project.studyplatform.controller.subject.dto.response.SubjectEditRespDto;
-import com.project.studyplatform.domain.note.Note;
+import com.project.studyplatform.controller.subject.dto.response.SubjectInfoRespDto;
 import com.project.studyplatform.domain.subject.Subject;
 import com.project.studyplatform.domain.subject.repository.SubjectRepository;
 import com.project.studyplatform.domain.user.User;
@@ -14,7 +16,9 @@ import com.project.studyplatform.ex.BusinessException;
 import com.project.studyplatform.ex.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +56,41 @@ public class SubjectService {
         subject.modify(reqDto.getSubjectName());
 
         return new SubjectEditRespDto(subject,user);
+
+    }
+
+    public void deleteSubject(Long userId, Long subjectId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
+
+        subjectRepository.delete(subject);
+    }
+
+    public SubjectInfoRespDto retrieveSubject(Long userId, Long subjectId, SubjectInfoReqDto reqDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
+
+        if (!subject.getUser().getId().equals(userId)) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_TO_VIEW);
+        }
+
+        return new SubjectInfoRespDto(subject, user);
+    }
+
+    public List<AllSubjectInfoRespDto> retrieveAllSubjects(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        List<Subject> subjectList = subjectRepository.findAllByUser(user);
+
+        return subjectList.stream()
+                .map(AllSubjectInfoRespDto::new)
+                .collect(Collectors.toList());
 
     }
 }
