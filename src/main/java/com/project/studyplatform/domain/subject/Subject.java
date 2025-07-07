@@ -30,4 +30,8 @@ public class Subject extends BaseEntity {
         this.user = user;
         this.name = name;
     }
+
+    public void modify(String subjectName) {
+        this.name = subjectName;
+    }
 }

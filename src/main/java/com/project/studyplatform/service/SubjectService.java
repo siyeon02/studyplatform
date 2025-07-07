@@ -1,7 +1,11 @@
 package com.project.studyplatform.service;
 
+import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectCreateReqDto;
+import com.project.studyplatform.controller.subject.dto.request.SubjectEditReqDto;
 import com.project.studyplatform.controller.subject.dto.response.SubjectCreateRespDto;
+import com.project.studyplatform.controller.subject.dto.response.SubjectEditRespDto;
+import com.project.studyplatform.domain.note.Note;
 import com.project.studyplatform.domain.subject.Subject;
 import com.project.studyplatform.domain.subject.repository.SubjectRepository;
 import com.project.studyplatform.domain.user.User;
@@ -31,6 +35,23 @@ public class SubjectService {
         Subject savedSubject = subjectRepository.save(subject);
 
         return new SubjectCreateRespDto(savedSubject, user);
+
+    }
+
+    public SubjectEditRespDto editSubject(Long userId, Long subjectId, SubjectEditReqDto reqDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Subject subject = subjectRepository.findByIdWithUser(subjectId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
+
+        if(!userId.equals(subject.getUser().getId())){
+            throw new BusinessException(ErrorCode.NO_PERMISSION_TO_EDIT);
+        }
+
+        subject.modify(reqDto.getSubjectName());
+
+        return new SubjectEditRespDto(subject,user);
 
     }
 }
