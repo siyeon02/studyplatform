@@ -17,13 +17,13 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String name;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String nickname;
 
-    @Column(length = 60)
+    @Column(columnDefinition = "VARCHAR(60)")
     private String password;
 
     @Column
@@ -43,4 +43,11 @@ public class User extends BaseEntity {
 
     }
 
+    public void editProfile(String name, String email, String password, String nickname, Status status) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.status = status;
+    }
 }

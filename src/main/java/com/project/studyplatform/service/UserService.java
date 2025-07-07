@@ -1,10 +1,10 @@
 package com.project.studyplatform.service;
 
-import com.project.studyplatform.controller.user.dto.request.LoginReqDto;
 import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
-import com.project.studyplatform.controller.user.dto.response.LoginRespDto;
+import com.project.studyplatform.controller.user.dto.request.UserDeleteReqDto;
+import com.project.studyplatform.controller.user.dto.request.UserProfileEditReqDto;
 import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
-import com.project.studyplatform.domain.BaseEntity;
+import com.project.studyplatform.controller.user.dto.response.UserProfileRespDto;
 import com.project.studyplatform.domain.user.User;
 import com.project.studyplatform.domain.user.repository.UserRepository;
 import com.project.studyplatform.ex.BusinessException;
@@ -23,25 +23,31 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
 
-    @Transactional
-    public SignupRespDto signup(SignupReqDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new BusinessException(ErrorCode.USER_ALREADY_EXIST);
-        }
+    public UserProfileRespDto findUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        String encodePassword = passwordEncoder.encode(dto.getPassword());
-
-        User user = User.builder()
-                .name(dto.getName())
-                .nickname(dto.getNickname())
-                .password(encodePassword)
-                .email(dto.getEmail())
-                .status(dto.getStatus())
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        return new SignupRespDto(savedUser);
+        return new UserProfileRespDto(user);
     }
 
+    @Transactional
+    public void userProfileEdit(Long userId, UserProfileEditReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        user.editProfile(dto.getName(), dto.getEmail(), dto.getPassword(), dto.getNickname(), dto.getStatus());
+        userRepository.save(user);
+
+    }
+
+    public void deleteUser(Long userId, UserDeleteReqDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.PASSWORD_NOT_MATCHING);
+        }
+
+        userRepository.delete(user);
+
+    }
 }
