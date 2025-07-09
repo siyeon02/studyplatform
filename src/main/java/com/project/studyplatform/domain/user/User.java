@@ -17,13 +17,13 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String name;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String nickname;
 
-    @Column(length = 60)
+    @Column(columnDefinition = "VARCHAR(60)")
     private String password;
 
     @Column
