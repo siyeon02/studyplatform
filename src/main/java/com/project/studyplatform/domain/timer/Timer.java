@@ -41,4 +41,9 @@ public class Timer extends BaseEntity {
         this.timerStatus = timerStatus;
     }
 
+    public void endTimer(LocalDateTime endTime){
+        this.endTime = endTime;
+        this.timerStatus = TimerStatus.END;
+    }
+
 }

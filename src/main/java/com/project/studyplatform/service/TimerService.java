@@ -1,6 +1,8 @@
 package com.project.studyplatform.service;
 
+import com.project.studyplatform.controller.timer.dto.request.EndTimeReqDto;
 import com.project.studyplatform.controller.timer.dto.request.StartTimeReqDto;
+import com.project.studyplatform.controller.timer.dto.response.EndTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.StartTimeRespDto;
 import com.project.studyplatform.domain.subject.Subject;
 import com.project.studyplatform.domain.subject.repository.SubjectRepository;
@@ -40,6 +42,24 @@ public class TimerService {
         Timer savedTimer = timerRepository.save(timer);
 
         return new StartTimeRespDto(savedTimer, subject);
+
+    }
+
+    public EndTimeRespDto endTimer(Long userId, Long subjectId, EndTimeReqDto reqDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
+
+        Timer timer = timerRepository.findBySubjectIdAndTimerStatus(subjectId, TimerStatus.IN_PROGRESS)
+                .orElseThrow(() -> new BusinessException(ErrorCode.TIMER_NOT_FOUND));
+
+        timer.endTimer(LocalDateTime.now());
+
+        Timer savedTimer = timerRepository.save(timer);
+
+        return new EndTimeRespDto(savedTimer, subject);
 
     }
 }
