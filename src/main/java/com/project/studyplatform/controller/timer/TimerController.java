@@ -2,8 +2,10 @@ package com.project.studyplatform.controller.timer;
 
 import com.project.studyplatform.controller.timer.dto.request.EndTimeReqDto;
 import com.project.studyplatform.controller.timer.dto.request.StartTimeReqDto;
+import com.project.studyplatform.controller.timer.dto.request.TimerInfoReqDto;
 import com.project.studyplatform.controller.timer.dto.response.EndTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.StartTimeRespDto;
+import com.project.studyplatform.controller.timer.dto.response.TimerInfoRespDto;
 import com.project.studyplatform.domain.user.User;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.TimerService;
@@ -37,4 +39,9 @@ public class TimerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(timerService.endTimer(user.getId(), subjectId, reqDto)));
     }
 
+    @GetMapping("/{subjectId}")
+    public ResponseEntity<ApiResult<TimerInfoRespDto>> retrieveTimer(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("subjectId") Long subjectId, @Valid @RequestBody TimerInfoReqDto reqDto){
+        User user = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(timerService.retrieveTimer(user.getId(), subjectId, reqDto)));
+    }
 }

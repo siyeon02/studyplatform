@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface TimerRepository extends JpaRepository<Timer, Long> {
     Optional<Timer> findBySubjectIdAndTimerStatus(Long subjectId, TimerStatus timerStatus);
 
+    Optional<Timer> findTopBySubjectIdOrderByStartTimeDesc(Long subjectId);
 }
