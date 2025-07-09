@@ -1,6 +1,5 @@
 package com.project.studyplatform.controller.subject;
 
-import com.project.studyplatform.controller.note.dto.response.AllNoteInfoRespDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectCreateReqDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectEditReqDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectInfoReqDto;
