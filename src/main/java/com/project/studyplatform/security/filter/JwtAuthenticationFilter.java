@@ -1,7 +1,7 @@
 package com.project.studyplatform.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.studyplatform.controller.user.dto.request.LoginReqDto;
+import com.project.studyplatform.controller.member.dto.request.LoginReqDto;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;

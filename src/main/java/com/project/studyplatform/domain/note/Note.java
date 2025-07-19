@@ -1,7 +1,7 @@
 package com.project.studyplatform.domain.note;
 
 import com.project.studyplatform.domain.BaseEntity;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,14 +25,14 @@ public class Note extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private User user;
+    private Member member;
 
     @Builder
-    public Note(Long id, String title, String content, User user) {
+    public Note(Long id, String title, String content, Member member) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.member = member;
     }
 
     public void modify(String title, String content) {

@@ -1,8 +1,7 @@
 package com.project.studyplatform.domain.subject.repository;
 
-import com.project.studyplatform.domain.note.Note;
 import com.project.studyplatform.domain.subject.Subject;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +14,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     @Query("SELECT s FROM Subject s JOIN FETCH s.user WHERE s.id = :subjectId")
     Optional<Subject> findByIdWithUser(@Param("subjectId") Long subjectId);
 
-    List<Subject> findAllByUser(User user);
+    List<Subject> findAllByUser(Member member);
 
 }
