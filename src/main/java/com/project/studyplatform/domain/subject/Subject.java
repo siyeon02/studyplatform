@@ -18,7 +18,7 @@ public class Subject extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @Column

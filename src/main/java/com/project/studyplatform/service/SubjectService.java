@@ -47,14 +47,17 @@ public class SubjectService {
 
     }
 
-    public SubjectEditRespDto editSubject(Long userId, Long subjectId, SubjectEditReqDto reqDto) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    public SubjectEditRespDto editSubject(Long memberId, Long subjectId, SubjectEditReqDto reqDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->{
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
 
         Subject subject = subjectRepository.findByIdWithUser(subjectId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
 
-        if(!userId.equals(subject.getMember().getId())){
+        if(!memberId.equals(subject.getMember().getId())){
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_EDIT);
         }
 
@@ -65,8 +68,6 @@ public class SubjectService {
     }
 
     public void deleteSubject(Long userId, Long subjectId) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
@@ -74,22 +75,28 @@ public class SubjectService {
         subjectRepository.delete(subject);
     }
 
-    public SubjectInfoRespDto retrieveSubject(Long userId, Long subjectId, SubjectInfoReqDto reqDto) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    public SubjectInfoRespDto retrieveSubject(Long memberId, Long subjectId, SubjectInfoReqDto reqDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->{
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
 
-        if (!subject.getMember().getId().equals(userId)) {
+        if (!subject.getMember().getId().equals(memberId)) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_VIEW);
         }
 
         return new SubjectInfoRespDto(subject, member);
     }
 
-    public List<AllSubjectInfoRespDto> retrieveAllSubjects(Long userId) {
-        Member member = memberRepository.findById(userId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    public List<AllSubjectInfoRespDto> retrieveAllSubjects(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->{
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
 
         List<Subject> subjectList = subjectRepository.findAllByUser(member);
 

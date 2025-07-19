@@ -24,7 +24,7 @@ public class Note extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "memberId")
     private Member member;
 
     @Builder
