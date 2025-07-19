@@ -1,6 +1,5 @@
 package com.project.studyplatform.controller.subject;
 
-import com.project.studyplatform.controller.note.dto.response.AllNoteInfoRespDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectCreateReqDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectEditReqDto;
 import com.project.studyplatform.controller.subject.dto.request.SubjectInfoReqDto;
@@ -13,6 +12,7 @@ import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.SubjectService;
 import com.project.studyplatform.util.ApiResult;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class SubjectController {
 
     private final SubjectService subjectService;
-    public SubjectController(SubjectService subjectService) { this.subjectService = subjectService; }
 
     @PostMapping("/subjects")
     public ResponseEntity<ApiResult<SubjectCreateRespDto>> createSubject(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody SubjectCreateReqDto reqDto) {
