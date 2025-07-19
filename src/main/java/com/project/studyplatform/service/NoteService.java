@@ -68,6 +68,7 @@ public class NoteService {
 
     }
 
+    @Transactional
     public void deleteNote(Long memberId, NoteDeleteReqDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->{
