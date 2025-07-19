@@ -1,11 +1,13 @@
 package com.project.studyplatform.domain.note;
 
 import com.project.studyplatform.domain.BaseEntity;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "notes")
@@ -24,19 +26,30 @@ public class Note extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    @Column
+    private LocalDateTime deletedAt;
 
     @Builder
-    public Note(Long id, String title, String content, User user) {
+    public Note(Long id, String title, String content, Member member) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.member = member;
     }
 
     public void modify(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 }

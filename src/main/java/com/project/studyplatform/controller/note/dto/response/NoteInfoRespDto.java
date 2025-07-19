@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class NoteEditRespDto {
+public class NoteInfoRespDto {
     private Long noteId;
     private String title;
     private String content;
@@ -15,7 +15,7 @@ public class NoteEditRespDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public NoteEditRespDto(Note note, Member member){
+    public NoteInfoRespDto(Note note, Member member){
         this.noteId = note.getId();
         this.title = note.getTitle();
         this.content = note.getContent();

@@ -1,26 +1,26 @@
 package com.project.studyplatform.controller.note.dto.response;
 
 import com.project.studyplatform.domain.note.Note;
-import com.project.studyplatform.domain.member.Member;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class NoteEditRespDto {
+@NoArgsConstructor
+public class AllNoteInfoRespDto {
     private Long noteId;
     private String title;
     private String content;
-    private Long userId;
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    public NoteEditRespDto(Note note, Member member){
+    public AllNoteInfoRespDto(Note note) {
         this.noteId = note.getId();
         this.title = note.getTitle();
         this.content = note.getContent();
-        this.userId = member.getId();
-        this.createdAt = note.getCreatedAt();
+        this.createAt = note.getCreatedAt();
         this.modifiedAt = note.getModifiedAt();
     }
 }
