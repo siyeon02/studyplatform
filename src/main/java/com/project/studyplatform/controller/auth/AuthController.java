@@ -1,7 +1,7 @@
 package com.project.studyplatform.controller.auth;
 
-import com.project.studyplatform.controller.user.dto.request.SignupReqDto;
-import com.project.studyplatform.controller.user.dto.response.SignupRespDto;
+import com.project.studyplatform.controller.member.dto.request.SignupReqDto;
+import com.project.studyplatform.controller.member.dto.response.SignupRespDto;
 import com.project.studyplatform.service.AuthService;
 import com.project.studyplatform.util.ApiResult;
 import jakarta.validation.Valid;

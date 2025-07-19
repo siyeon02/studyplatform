@@ -1,10 +1,8 @@
 package com.project.studyplatform.controller.subject.dto.response;
 
 import com.project.studyplatform.domain.subject.Subject;
-import com.project.studyplatform.domain.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +17,7 @@ public class AllSubjectInfoRespDto {
 
     public AllSubjectInfoRespDto(Subject subject){
         this.subjectId = subject.getId();
-        this.userId = subject.getUser().getId();
+        this.userId = subject.getMember().getId();
         this.subjectName = subject.getName();
         this.createdAt = subject.getCreatedAt();
         this.createdAt = subject.getModifiedAt();

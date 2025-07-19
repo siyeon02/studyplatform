@@ -1,4 +1,4 @@
-package com.project.studyplatform.controller.user.dto.request;
+package com.project.studyplatform.controller.member.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

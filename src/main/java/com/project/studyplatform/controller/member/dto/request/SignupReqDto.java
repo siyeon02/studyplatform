@@ -1,6 +1,6 @@
-package com.project.studyplatform.controller.user.dto.request;
+package com.project.studyplatform.controller.member.dto.request;
 
-import com.project.studyplatform.domain.user.Status;
+import com.project.studyplatform.domain.member.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,7 @@
 package com.project.studyplatform.domain.subject;
 
 import com.project.studyplatform.domain.BaseEntity;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,16 +18,16 @@ public class Subject extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     @Column
     private String name;
 
     @Builder
-    public Subject(Long id, User user, String name) {
+    public Subject(Long id, Member member, String name) {
         this.id = id;
-        this.user = user;
+        this.member = member;
         this.name = name;
     }
 
