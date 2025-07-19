@@ -1,4 +1,4 @@
-package com.project.studyplatform.controller.user.dto.response;
+package com.project.studyplatform.controller.member.dto.response;
 
 import lombok.Getter;
 

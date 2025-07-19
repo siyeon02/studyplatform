@@ -1,7 +1,7 @@
 package com.project.studyplatform.controller.note.dto.response;
 
 import com.project.studyplatform.domain.note.Note;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,11 +15,11 @@ public class NoteInfoRespDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public NoteInfoRespDto(Note note, User user){
+    public NoteInfoRespDto(Note note, Member member){
         this.noteId = note.getId();
         this.title = note.getTitle();
         this.content = note.getContent();
-        this.userId = user.getId();
+        this.userId = member.getId();
         this.createdAt = note.getCreatedAt();
         this.modifiedAt = note.getModifiedAt();
     }

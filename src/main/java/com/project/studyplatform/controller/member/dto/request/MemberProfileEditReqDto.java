@@ -1,6 +1,6 @@
-package com.project.studyplatform.controller.user.dto.request;
+package com.project.studyplatform.controller.member.dto.request;
 
-import com.project.studyplatform.domain.user.Status;
+import com.project.studyplatform.domain.member.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfileEditReqDto {
+public class MemberProfileEditReqDto {
 
     @NotBlank(message = "이름을 입력하세요.")
     @Length(max = 20, message = "이름은 최대 20자입니다.")

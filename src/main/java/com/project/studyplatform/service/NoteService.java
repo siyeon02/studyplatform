@@ -9,8 +9,8 @@ import com.project.studyplatform.controller.note.dto.response.NoteEditRespDto;
 import com.project.studyplatform.controller.note.dto.response.NoteInfoRespDto;
 import com.project.studyplatform.domain.note.Note;
 import com.project.studyplatform.domain.note.repository.NoteRepository;
-import com.project.studyplatform.domain.user.User;
-import com.project.studyplatform.domain.user.repository.UserRepository;
+import com.project.studyplatform.domain.member.Member;
+import com.project.studyplatform.domain.member.repository.MemberRepository;
 import com.project.studyplatform.ex.BusinessException;
 import com.project.studyplatform.ex.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,42 +25,42 @@ import java.util.stream.Collectors;
 public class NoteService {
 
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public NoteCreateRespDto createNote(Long userId, NoteCreateReqDto dto) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
         Note note = Note.builder()
                 .title(dto.getTitle())
                 .content(dto.getContent())
-                .user(user)
+                .member(member)
                 .build();
 
         Note savedNote = noteRepository.save(note);
 
-        return new NoteCreateRespDto(savedNote, user);
+        return new NoteCreateRespDto(savedNote, member);
     }
 
     public NoteEditRespDto editNote(Long userId, Long noteId, NoteEditReqDto dto) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Note note = noteRepository.findByIdWithUser(noteId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
 
-        if(!userId.equals(note.getUser().getId())){
+        if(!userId.equals(note.getMember().getId())){
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_EDIT);
         }
 
         note.modify(dto.getTitle(), dto.getContent());
 
-        return new NoteEditRespDto(note,user);
+        return new NoteEditRespDto(note, member);
 
     }
 
     public void deleteNote(Long userId, NoteDeleteReqDto dto) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Note note = noteRepository.findById(dto.getNoteId())
@@ -70,21 +70,21 @@ public class NoteService {
     }
 
     public NoteInfoRespDto retrieveNote(Long userId, Long noteId) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException((ErrorCode.USER_NOT_FOUND)));
 
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
 
-        return new NoteInfoRespDto(note, user);
+        return new NoteInfoRespDto(note, member);
     }
 
     public List<AllNoteInfoRespDto> retrieveAllNotes(Long userId) {
-        User user = userRepository.findById(userId)
+        Member member = memberRepository.findById(userId)
                 .orElseThrow(()-> new BusinessException((ErrorCode.USER_NOT_FOUND)));
 
         List<Note> noteList = noteRepository
-                .findAllByUser(user);
+                .findAllByUser(member);
 
         return noteList.stream()
                 .map(AllNoteInfoRespDto::new)

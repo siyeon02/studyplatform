@@ -1,4 +1,4 @@
-package com.project.studyplatform.domain.note;
+package com.project.studyplatform.domain.subject;
 
 import com.project.studyplatform.domain.BaseEntity;
 import com.project.studyplatform.domain.member.Member;
@@ -8,35 +8,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "notes")
+@Table(name = "subjects")
 @Getter
 @NoArgsConstructor
-public class Note extends BaseEntity {
+public class Subject extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String title;
-
-    @Column
-    private String content;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private Member member;
 
+    @Column
+    private String name;
+
     @Builder
-    public Note(Long id, String title, String content, Member member) {
+    public Subject(Long id, Member member, String name) {
         this.id = id;
-        this.title = title;
-        this.content = content;
         this.member = member;
+        this.name = name;
     }
 
-    public void modify(String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void modify(String subjectName) {
+        this.name = subjectName;
     }
 }

@@ -1,4 +1,4 @@
-package com.project.studyplatform.domain.user;
+package com.project.studyplatform.domain.member;
 
 
 import com.project.studyplatform.domain.BaseEntity;
@@ -8,22 +8,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "members")
 @Getter
 @NoArgsConstructor
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String name;
 
-    @Column(length = 20)
+    @Column(columnDefinition = "VARCHAR(20)")
     private String nickname;
 
-    @Column(length = 60)
+    @Column(columnDefinition = "VARCHAR(60)")
     private String password;
 
     @Column
@@ -34,7 +34,7 @@ public class User extends BaseEntity {
 
 
     @Builder
-    public User(String name, String nickname, String password, String email, Status status) {
+    public Member(String name, String nickname, String password, String email, Status status) {
         this.name = name;
         this.nickname = nickname;
         this.password = password;
