@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "notes")
 @Getter
@@ -27,6 +29,9 @@ public class Note extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     @Builder
     public Note(Long id, String title, String content, Member member) {
         this.id = id;
@@ -38,5 +43,13 @@ public class Note extends BaseEntity {
     public void modify(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public boolean isDeleted() {
+        return this.deletedAt != null;
     }
 }

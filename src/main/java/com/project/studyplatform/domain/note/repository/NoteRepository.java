@@ -13,5 +13,8 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     @Query("SELECT n FROM Note n JOIN FETCH n.member WHERE n.id = :noteId")
     Optional<Note> findByIdWithUser(@Param("noteId") Long noteId);
 
-    List<Note> findAllByMember(Member member);
+    List<Note> findAllByMemberAndDeletedAtIsNull(Member member);
+
+    @Query("SELECT n FROM Note n WHERE n.id = :id AND n.deletedAt IS NULL")
+    Optional<Note> findByIdAndNotDeleted(@Param("id") Long id);
 }

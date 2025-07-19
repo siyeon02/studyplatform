@@ -78,7 +78,7 @@ public class NoteService {
         Note note = noteRepository.findById(dto.getNoteId())
                 .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
 
-        noteRepository.delete(note);
+        note.softDelete();
     }
 
     public NoteInfoRespDto retrieveNote(Long memberId, Long noteId) {
@@ -88,7 +88,7 @@ public class NoteService {
                     throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
                 });
 
-        Note note = noteRepository.findById(noteId)
+        Note note = noteRepository.findByIdAndNotDeleted(noteId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.NOTE_NOT_FOUND));
 
         return new NoteInfoRespDto(note, member);
@@ -102,7 +102,7 @@ public class NoteService {
                 });
 
         List<Note> noteList = noteRepository
-                .findAllByMember(member);
+                .findAllByMemberAndDeletedAtIsNull(member);
 
         return noteList.stream()
                 .map(AllNoteInfoRespDto::new)
