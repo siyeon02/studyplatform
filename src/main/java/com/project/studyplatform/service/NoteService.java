@@ -102,7 +102,7 @@ public class NoteService {
                 });
 
         List<Note> noteList = noteRepository
-                .findAllByUser(member);
+                .findAllByMember(member);
 
         return noteList.stream()
                 .map(AllNoteInfoRespDto::new)

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
-    @Query("SELECT n FROM Note n JOIN FETCH n.user WHERE n.id = :noteId")
+    @Query("SELECT n FROM Note n JOIN FETCH n.member WHERE n.id = :noteId")
     Optional<Note> findByIdWithUser(@Param("noteId") Long noteId);
 
-    List<Note> findAllByUser(Member member);
+    List<Note> findAllByMember(Member member);
 }

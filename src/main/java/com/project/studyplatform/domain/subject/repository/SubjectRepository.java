@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
-    @Query("SELECT s FROM Subject s JOIN FETCH s.user WHERE s.id = :subjectId")
-    Optional<Subject> findByIdWithUser(@Param("subjectId") Long subjectId);
+    @Query("SELECT s FROM Subject s JOIN FETCH s.member WHERE s.id = :subjectId")
+    Optional<Subject> findByIdWithMember(@Param("subjectId") Long subjectId);
 
-    List<Subject> findAllByUser(Member member);
+    List<Subject> findAllByMember(Member member);
 
 }

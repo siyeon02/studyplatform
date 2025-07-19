@@ -54,7 +54,7 @@ public class SubjectService {
                     throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
                 });
 
-        Subject subject = subjectRepository.findByIdWithUser(subjectId)
+        Subject subject = subjectRepository.findByIdWithMember(subjectId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
 
         if(!memberId.equals(subject.getMember().getId())){
@@ -98,7 +98,7 @@ public class SubjectService {
                     throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
                 });
 
-        List<Subject> subjectList = subjectRepository.findAllByUser(member);
+        List<Subject> subjectList = subjectRepository.findAllByMember(member);
 
         return subjectList.stream()
                 .map(AllSubjectInfoRespDto::new)
