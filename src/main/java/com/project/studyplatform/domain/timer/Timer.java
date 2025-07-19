@@ -2,7 +2,6 @@ package com.project.studyplatform.domain.timer;
 
 import com.project.studyplatform.domain.BaseEntity;
 import com.project.studyplatform.domain.subject.Subject;
-import com.project.studyplatform.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

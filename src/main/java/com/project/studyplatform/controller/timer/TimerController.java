@@ -6,7 +6,7 @@ import com.project.studyplatform.controller.timer.dto.request.TimerInfoReqDto;
 import com.project.studyplatform.controller.timer.dto.response.EndTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.StartTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.TimerInfoRespDto;
-import com.project.studyplatform.domain.user.User;
+import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.TimerService;
 import com.project.studyplatform.util.ApiResult;
@@ -29,19 +29,19 @@ public class TimerController {
     @PostMapping("/{subjectId}/start-timer")
     public ResponseEntity<ApiResult<StartTimeRespDto>> startTimer(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("subjectId") Long subjectId, @Valid @RequestBody StartTimeReqDto reqDto) {
 
-        User user = userDetails.getUser();
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(timerService.startTimer(user.getId(), subjectId, reqDto)));
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(timerService.startTimer(member.getId(), subjectId, reqDto)));
     }
 
     @PostMapping("/{subjectId}/end-timer")
     public ResponseEntity<ApiResult<EndTimeRespDto>> endTimer(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("subjectId") Long subjectId, @Valid @RequestBody EndTimeReqDto reqDto) {
-        User user = userDetails.getUser();
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(timerService.endTimer(user.getId(), subjectId, reqDto)));
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(timerService.endTimer(member.getId(), subjectId, reqDto)));
     }
 
     @GetMapping("/{subjectId}")
     public ResponseEntity<ApiResult<TimerInfoRespDto>> retrieveTimer(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("subjectId") Long subjectId, @Valid @RequestBody TimerInfoReqDto reqDto){
-        User user = userDetails.getUser();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(timerService.retrieveTimer(user.getId(), subjectId, reqDto)));
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(timerService.retrieveTimer(member.getId(), subjectId, reqDto)));
     }
 }

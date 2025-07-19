@@ -6,31 +6,37 @@ import com.project.studyplatform.controller.timer.dto.request.TimerInfoReqDto;
 import com.project.studyplatform.controller.timer.dto.response.EndTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.StartTimeRespDto;
 import com.project.studyplatform.controller.timer.dto.response.TimerInfoRespDto;
+import com.project.studyplatform.domain.member.Member;
+import com.project.studyplatform.domain.member.repository.MemberRepository;
 import com.project.studyplatform.domain.subject.Subject;
 import com.project.studyplatform.domain.subject.repository.SubjectRepository;
 import com.project.studyplatform.domain.timer.Timer;
 import com.project.studyplatform.domain.timer.TimerStatus;
 import com.project.studyplatform.domain.timer.repository.TimerRepository;
-import com.project.studyplatform.domain.user.User;
-import com.project.studyplatform.domain.user.repository.UserRepository;
 import com.project.studyplatform.ex.BusinessException;
 import com.project.studyplatform.ex.ErrorCode;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TimerService {
     private final TimerRepository timerRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final SubjectRepository subjectRepository;
 
-    public StartTimeRespDto startTimer(Long userId, Long subjectId, StartTimeReqDto reqDto) {
+    public StartTimeRespDto startTimer(Long memberId, Long subjectId, StartTimeReqDto reqDto) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->{
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
 
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
@@ -47,9 +53,12 @@ public class TimerService {
 
     }
 
-    public EndTimeRespDto endTimer(Long userId, Long subjectId, EndTimeReqDto reqDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    public EndTimeRespDto endTimer(Long memberId, Long subjectId, EndTimeReqDto reqDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()->{
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
 
         Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.SUBJECT_NOT_FOUND));
@@ -65,7 +74,7 @@ public class TimerService {
 
     }
 
-    public TimerInfoRespDto retrieveTimer(Long userId, Long subjectId, TimerInfoReqDto reqDto) {
+    public TimerInfoRespDto retrieveTimer(Long memberId, Long subjectId, TimerInfoReqDto reqDto) {
         Timer timer = timerRepository.findTopBySubjectIdOrderByStartTimeDesc(subjectId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.TIMER_NOT_FOUND));
 
