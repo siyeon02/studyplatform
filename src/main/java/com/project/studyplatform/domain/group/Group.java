@@ -37,4 +37,14 @@ public class Group extends BaseEntity {
         this.name = name;
         this.manager = manager;
     }
+
+    public void addGroupMember(Member member) {
+        GroupMember gm = new GroupMember(this, member);
+        this.groupMembers.add(gm);
+        member.getGroupMembers().add(gm);
+    }
+
+    public void modify(String groupName) {
+        this.name = groupName;
+    }
 }

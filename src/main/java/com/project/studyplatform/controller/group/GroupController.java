@@ -1,7 +1,9 @@
 package com.project.studyplatform.controller.group;
 
 import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
+import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
+import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.GroupService;
@@ -11,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +27,11 @@ public class GroupController {
 
         Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResult.success(groupService.createGroup(member.getId(), reqDto)));
+    }
+
+    @PutMapping("/{groupId}")
+    public ResponseEntity<ApiResult<GroupEditRespDto>> editGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupEditReqDto reqDto) {
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.editGroup(member.getId(), groupId, reqDto)));
     }
 }

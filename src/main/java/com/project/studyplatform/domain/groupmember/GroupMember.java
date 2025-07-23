@@ -21,4 +21,9 @@ public class GroupMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    public GroupMember(Group group, Member member) {
+        this.group = group;
+        this.member = member;
+    }
 }

@@ -21,6 +21,7 @@ public enum ErrorCode {
     SUBJECT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "과목을 찾을 수 없습니다."),
     NO_PERMISSION_TO_VIEW(HttpStatus.FORBIDDEN.value(), "권한이 없습니다."),
     TIMER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "타이머를 찾을 수 없습니다."),
+    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "그룹을 찾을 수 없습니다."),
     ;
 
     private final int status;
