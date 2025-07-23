@@ -3,14 +3,17 @@ package com.project.studyplatform.controller.group;
 import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
+import com.project.studyplatform.controller.group.dto.request.GroupInfoReqDto;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
+import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.GroupService;
 import com.project.studyplatform.util.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,5 +44,13 @@ public class GroupController {
         Member member = userDetails.getUser();
         groupService.deleteGroup(member.getId(), groupId, reqDto);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
+    }
+
+    @PostMap
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<ApiResult<GroupInfoRespDto>> retrieveGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupInfoReqDto reqDto){
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.retrieveGroup(member.getId(), groupId, reqDto)));
     }
 }

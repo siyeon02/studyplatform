@@ -3,8 +3,10 @@ package com.project.studyplatform.service;
 import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
+import com.project.studyplatform.controller.group.dto.request.GroupInfoReqDto;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
+import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
 import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.group.repository.GroupRepository;
 import com.project.studyplatform.domain.member.Member;
@@ -15,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -23,6 +26,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public GroupCreateRespDto createGroup(Long memberId, GroupCreateReqDto reqDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
@@ -41,6 +45,7 @@ public class GroupService {
         return new GroupCreateRespDto(savedGroup, member);
     }
 
+    @Transactional
     public GroupEditRespDto editGroup(Long memberId, Long groupId, GroupEditReqDto reqDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
@@ -61,6 +66,7 @@ public class GroupService {
 
     }
 
+    @Transactional
     public void deleteGroup(Long memberId, Long groupId, GroupDeleteReqDto reqDto) {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
@@ -73,4 +79,16 @@ public class GroupService {
     }
 
 
+    public GroupInfoRespDto retrieveGroup(Long memberId, Long groupId, GroupInfoReqDto reqDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
+
+        return new GroupInfoRespDto(group);
+    }
 }
