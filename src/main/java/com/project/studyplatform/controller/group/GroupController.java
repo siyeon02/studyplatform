@@ -1,6 +1,7 @@
 package com.project.studyplatform.controller.group;
 
 import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
+import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
@@ -33,5 +34,12 @@ public class GroupController {
     public ResponseEntity<ApiResult<GroupEditRespDto>> editGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupEditReqDto reqDto) {
         Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.editGroup(member.getId(), groupId, reqDto)));
+    }
+
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<ApiResult<Void>> deleteGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupDeleteReqDto reqDto) {
+        Member member = userDetails.getUser();
+        groupService.deleteGroup(member.getId(), groupId, reqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
     }
 }

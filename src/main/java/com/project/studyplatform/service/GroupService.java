@@ -1,6 +1,7 @@
 package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
+import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
 import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
@@ -59,4 +60,17 @@ public class GroupService {
         return new GroupEditRespDto(group, member);
 
     }
+
+    public void deleteGroup(Long memberId, Long groupId, GroupDeleteReqDto reqDto) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
+
+        if (!memberId.equals(group.getManager().getId())) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_TO_DELETE);
+        }
+
+        groupRepository.delete(group);
+    }
+
+
 }
