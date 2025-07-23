@@ -102,7 +102,6 @@ public class GroupService {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
-        // 중복 가입 방지 (옵션)
         boolean alreadyJoined = group.getGroupMembers().stream()
                 .anyMatch(gm -> gm.getMember().getId().equals(memberId));
         if (alreadyJoined) {
@@ -111,7 +110,7 @@ public class GroupService {
 
         group.addGroupMember(member);
 
-        groupRepository.save(group); // Cascade.ALL이므로 GroupMember도 저장됨
+        groupRepository.save(group);
 
         return new GroupJoinRespDto(group, member);
     }
