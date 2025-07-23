@@ -1,10 +1,7 @@
 package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.group.dto.request.*;
-import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
+import com.project.studyplatform.controller.group.dto.response.*;
 import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.group.repository.GroupRepository;
 import com.project.studyplatform.domain.member.Member;
@@ -16,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -67,7 +67,7 @@ public class GroupService {
     @Transactional
     public void deleteGroup(Long memberId, Long groupId, GroupDeleteReqDto reqDto) {
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
         if (!memberId.equals(group.getManager().getId())) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_DELETE);
@@ -113,5 +113,20 @@ public class GroupService {
         groupRepository.save(group);
 
         return new GroupJoinRespDto(group, member);
+    }
+
+    public List<AllGroupInfoRespDto> retrieveAllGroups(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
+
+        List<Group> groupList = groupRepository.findGroupsByMember(member);
+
+        return groupList.stream()
+                .map(AllGroupInfoRespDto::new)
+                .collect(Collectors.toList());
+
     }
 }

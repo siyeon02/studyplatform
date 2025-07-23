@@ -1,21 +1,20 @@
 package com.project.studyplatform.controller.group;
 
 import com.project.studyplatform.controller.group.dto.request.*;
-import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
-import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
+import com.project.studyplatform.controller.group.dto.response.*;
+import com.project.studyplatform.controller.subject.dto.response.AllSubjectInfoRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.GroupService;
 import com.project.studyplatform.util.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,5 +53,12 @@ public class GroupController {
     public ResponseEntity<ApiResult<GroupInfoRespDto>> retrieveGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupInfoReqDto reqDto){
         Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.retrieveGroup(member.getId(), groupId, reqDto)));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResult<List<AllGroupInfoRespDto>>> retrieveAllGroups(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        Member member = userDetails.getUser();
+        List<AllGroupInfoRespDto> groupList =  groupService.retrieveAllGroups(member.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupList));
     }
 }

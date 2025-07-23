@@ -20,7 +20,7 @@ public class AllSubjectInfoRespDto {
         this.userId = subject.getMember().getId();
         this.subjectName = subject.getName();
         this.createdAt = subject.getCreatedAt();
-        this.createdAt = subject.getModifiedAt();
+        this.modifiedAt = subject.getModifiedAt();
     }
 
 }
