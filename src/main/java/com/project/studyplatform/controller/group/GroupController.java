@@ -1,12 +1,10 @@
 package com.project.studyplatform.controller.group;
 
-import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupInfoReqDto;
+import com.project.studyplatform.controller.group.dto.request.*;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
+import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.GroupService;
@@ -46,7 +44,11 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
     }
 
-    @PostMap
+    @PostMapping("/{groupId}/member")
+    public ResponseEntity<ApiResult<GroupJoinRespDto>> joinGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid@RequestBody GroupJoinReqDto reqDto){
+        Member member= userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.joinGroup(member.getId(), groupId, reqDto)));
+    }
 
     @GetMapping("/{groupId}")
     public ResponseEntity<ApiResult<GroupInfoRespDto>> retrieveGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupInfoReqDto reqDto){

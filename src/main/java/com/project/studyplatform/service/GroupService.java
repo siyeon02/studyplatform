@@ -1,12 +1,10 @@
 package com.project.studyplatform.service;
 
-import com.project.studyplatform.controller.group.dto.request.GroupCreateReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupDeleteReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupEditReqDto;
-import com.project.studyplatform.controller.group.dto.request.GroupInfoReqDto;
+import com.project.studyplatform.controller.group.dto.request.*;
 import com.project.studyplatform.controller.group.dto.response.GroupCreateRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
 import com.project.studyplatform.controller.group.dto.response.GroupInfoRespDto;
+import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
 import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.group.repository.GroupRepository;
 import com.project.studyplatform.domain.member.Member;
@@ -90,5 +88,31 @@ public class GroupService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
 
         return new GroupInfoRespDto(group);
+    }
+
+    @Transactional
+    public GroupJoinRespDto joinGroup(Long memberId, Long groupId, GroupJoinReqDto reqDto) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
+
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
+
+        // 중복 가입 방지 (옵션)
+        boolean alreadyJoined = group.getGroupMembers().stream()
+                .anyMatch(gm -> gm.getMember().getId().equals(memberId));
+        if (alreadyJoined) {
+            throw new BusinessException(ErrorCode.ALREADY_JOINED);
+        }
+
+        group.addGroupMember(member);
+
+        groupRepository.save(group); // Cascade.ALL이므로 GroupMember도 저장됨
+
+        return new GroupJoinRespDto(group, member);
     }
 }
