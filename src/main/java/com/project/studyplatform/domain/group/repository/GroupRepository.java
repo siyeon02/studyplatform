@@ -12,4 +12,6 @@ import java.util.List;
 public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("SELECT gm.group FROM GroupMember gm WHERE gm.member = :member")
     List<Group> findGroupsByMember(@Param("member") Member member);
+
+    List<Group> findByNameContaining(String name);
 }

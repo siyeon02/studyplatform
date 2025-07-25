@@ -61,4 +61,10 @@ public class GroupController {
         List<AllGroupInfoRespDto> groupList =  groupService.retrieveAllGroups(member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupList));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResult<List<GroupSearchRespDto>>> searchGroups(@RequestParam("name") String name){
+        List<GroupSearchRespDto> result = groupService.searchGroups(name);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(result));
+    }
 }

@@ -129,4 +129,11 @@ public class GroupService {
                 .collect(Collectors.toList());
 
     }
+
+    public List<GroupSearchRespDto> searchGroups(String name) {
+        List<Group> groups = groupRepository.findByNameContaining(name);
+        return groups.stream()
+                .map(GroupSearchRespDto::new)
+                .collect(Collectors.toList());
+    }
 }
