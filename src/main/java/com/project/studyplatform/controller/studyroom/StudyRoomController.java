@@ -1,10 +1,7 @@
 package com.project.studyplatform.controller.studyroom;
 
 import com.project.studyplatform.controller.studyroom.dto.request.*;
-import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
-import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
-import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomInfoRespDto;
-import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomJoinRespDto;
+import com.project.studyplatform.controller.studyroom.dto.response.*;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.StudyRoomService;
@@ -15,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,8 +48,15 @@ public class StudyRoomController {
     }
 
     @GetMapping("{studyroomId}")
-    public ResponseEntity<ApiResult<StudyRoomInfoRespDto>> retrieveStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomInfoReqDto reqDto){
+    public ResponseEntity<ApiResult<StudyRoomInfoRespDto>> retrieveStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomInfoReqDto reqDto) {
         Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.retrieveStudyRoom(member.getId(), studyroomId, reqDto)));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResult<List<AllStudyRoomInfoRespDto>>> retrieveAllStudyRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getUser();
+        List<AllStudyRoomInfoRespDto> studyRoomList = studyRoomService.retrieveAllStudyRooms(member.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomList));
     }
 }
