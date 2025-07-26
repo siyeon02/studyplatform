@@ -1,14 +1,10 @@
 package com.project.studyplatform.service;
 
-import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomJoinReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.*;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
+import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomInfoRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomJoinRespDto;
-import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.domain.member.repository.MemberRepository;
 import com.project.studyplatform.domain.studyroom.StudyRoom;
@@ -20,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -29,6 +26,7 @@ public class StudyRoomService {
     private final StudyRoomRepository studyRoomRepository;
     private final MemberRepository memberRepository;
 
+    @Transactional
     public StudyRoomCreateRespDto createStudyRoom(Long memberId, StudyRoomCreateReqDto reqDto) {
 
         Member member = memberRepository.findById(memberId)
@@ -54,6 +52,7 @@ public class StudyRoomService {
         return new StudyRoomCreateRespDto(savedStudyRoom, member);
     }
 
+    @Transactional
     public StudyRoomEditRespDto editStudyRoom(Long memberId, Long studyroomId, StudyRoomEditReqDto reqDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
@@ -62,7 +61,7 @@ public class StudyRoomService {
                 });
 
         StudyRoom studyRoom = studyRoomRepository.findById(studyroomId)
-                .orElseThrow(()-> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
 
         if (!member.getId().equals(studyRoom.getManager().getId())) {
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_EDIT);
@@ -73,6 +72,7 @@ public class StudyRoomService {
         return new StudyRoomEditRespDto(studyRoom);
     }
 
+    @Transactional
     public void deleteStudyRoom(Long memberId, Long studyroomId, StudyRoomDeleteReqDto reqDto) {
         StudyRoom studyRoom = studyRoomRepository.findById(studyroomId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
@@ -84,6 +84,7 @@ public class StudyRoomService {
         studyRoomRepository.delete(studyRoom);
     }
 
+    @Transactional
     public StudyRoomJoinRespDto joinStudyRoom(Long memberId, Long studyroomId, StudyRoomJoinReqDto reqDto) {
 
         Member member = memberRepository.findById(memberId)
@@ -98,11 +99,11 @@ public class StudyRoomService {
         boolean alreadyJoined = studyRoom.getParticipants().stream()
                 .anyMatch(participant -> participant.getMember().getId().equals(memberId));
 
-        if(alreadyJoined){
+        if (alreadyJoined) {
             throw new BusinessException(ErrorCode.ALREADY_JOINED);
         }
 
-        if(studyRoom.getParticipants().size() >= studyRoom.getMaxParticipants()){
+        if (studyRoom.getParticipants().size() >= studyRoom.getMaxParticipants()) {
             throw new BusinessException(ErrorCode.MAX_PARTICIPANTS);
         }
 
@@ -114,6 +115,20 @@ public class StudyRoomService {
         studyRoom.getParticipants().add(studyRoomUser);
 
         return new StudyRoomJoinRespDto(studyRoom, member);
+
+    }
+
+    public StudyRoomInfoRespDto retrieveStudyRoom(Long memberId, Long studyroomId, StudyRoomInfoReqDto reqDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
+
+        StudyRoom studyRoom = studyRoomRepository.findById(studyroomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
+
+        return new StudyRoomInfoRespDto(studyRoom);
 
     }
 }

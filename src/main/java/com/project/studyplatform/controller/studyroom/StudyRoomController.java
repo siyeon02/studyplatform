@@ -1,13 +1,9 @@
 package com.project.studyplatform.controller.studyroom;
 
-import com.project.studyplatform.controller.group.dto.request.GroupJoinReqDto;
-import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
-import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomJoinReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.*;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
+import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomInfoRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomJoinRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
@@ -47,8 +43,14 @@ public class StudyRoomController {
     }
 
     @PostMapping("/{studyroomId}/member")
-    public ResponseEntity<ApiResult<StudyRoomJoinRespDto>> joinStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid@RequestBody StudyRoomJoinReqDto reqDto){
-        Member member= userDetails.getUser();
+    public ResponseEntity<ApiResult<StudyRoomJoinRespDto>> joinStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomJoinReqDto reqDto) {
+        Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.joinStudyRoom(member.getId(), studyroomId, reqDto)));
+    }
+
+    @GetMapping("{studyroomId}")
+    public ResponseEntity<ApiResult<StudyRoomInfoRespDto>> retrieveStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomInfoReqDto reqDto){
+        Member member = userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.retrieveStudyRoom(member.getId(), studyroomId, reqDto)));
     }
 }
