@@ -24,6 +24,7 @@ public enum ErrorCode {
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "그룹을 찾을 수 없습니다."),
     NO_PERMISSION_TO_DELETE(HttpStatus.FORBIDDEN.value(), "삭제할 권한이 없습니다."),
     ALREADY_JOINED(HttpStatus.BAD_REQUEST.value(), "이미 가입한 그룹입니다."),
+    STUDYROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"스터디룸을 찾을 수 없습니다."),
     ;
 
     private final int status;

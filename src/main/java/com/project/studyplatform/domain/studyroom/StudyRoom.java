@@ -54,4 +54,10 @@ public class StudyRoom extends BaseEntity {
 
     }
 
+    public void modify(String studyRoomName, String description, String password, Integer maxParticipants) {
+        this.name = studyRoomName;
+        this.description = description;
+        this.password = password;
+        this.maxParticipants = maxParticipants;
+    }
 }
