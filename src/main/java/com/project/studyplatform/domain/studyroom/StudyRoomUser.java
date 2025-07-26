@@ -2,6 +2,7 @@ package com.project.studyplatform.domain.studyroom;
 
 import com.project.studyplatform.domain.member.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ public class StudyRoomUser {
     @JoinColumn(name = "studyroom_id")
     private StudyRoom studyRoom;
 
+    @Builder
     public StudyRoomUser(Member member, StudyRoom studyRoom){
         this.member = member;
         this.studyRoom = studyRoom;

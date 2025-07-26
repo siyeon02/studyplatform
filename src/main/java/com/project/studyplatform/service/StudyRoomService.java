@@ -4,8 +4,10 @@ import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomJoinReqDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
+import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomJoinRespDto;
 import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.domain.member.repository.MemberRepository;
@@ -80,5 +82,38 @@ public class StudyRoomService {
         }
 
         studyRoomRepository.delete(studyRoom);
+    }
+
+    public StudyRoomJoinRespDto joinStudyRoom(Long memberId, Long studyroomId, StudyRoomJoinReqDto reqDto) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
+                    throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
+                });
+
+        StudyRoom studyRoom = studyRoomRepository.findById(studyroomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
+
+        boolean alreadyJoined = studyRoom.getParticipants().stream()
+                .anyMatch(participant -> participant.getMember().getId().equals(memberId));
+
+        if(alreadyJoined){
+            throw new BusinessException(ErrorCode.ALREADY_JOINED);
+        }
+
+        if(studyRoom.getParticipants().size() >= studyRoom.getMaxParticipants()){
+            throw new BusinessException(ErrorCode.MAX_PARTICIPANTS);
+        }
+
+        StudyRoomUser studyRoomUser = StudyRoomUser.builder()
+                .member(member)
+                .studyRoom(studyRoom)
+                .build();
+
+        studyRoom.getParticipants().add(studyRoomUser);
+
+        return new StudyRoomJoinRespDto(studyRoom, member);
+
     }
 }

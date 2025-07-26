@@ -1,17 +1,20 @@
 package com.project.studyplatform.controller.studyroom;
 
+import com.project.studyplatform.controller.group.dto.request.GroupJoinReqDto;
+import com.project.studyplatform.controller.group.dto.response.GroupJoinRespDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomJoinReqDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
+import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomJoinRespDto;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.security.entity.UserDetailsImpl;
 import com.project.studyplatform.service.StudyRoomService;
 import com.project.studyplatform.util.ApiResult;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,9 +40,15 @@ public class StudyRoomController {
     }
 
     @DeleteMapping("/{studyroomId}")
-    public ResponseEntity<ApiResult<Void>> deleteStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomDeleteReqDto reqDto){
+    public ResponseEntity<ApiResult<Void>> deleteStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomDeleteReqDto reqDto) {
         Member member = userDetails.getUser();
         studyRoomService.deleteStudyRoom(member.getId(), studyroomId, reqDto);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
+    }
+
+    @PostMapping("/{studyroomId}/member")
+    public ResponseEntity<ApiResult<StudyRoomJoinRespDto>> joinStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid@RequestBody StudyRoomJoinReqDto reqDto){
+        Member member= userDetails.getUser();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.joinStudyRoom(member.getId(), studyroomId, reqDto)));
     }
 }

@@ -25,6 +25,7 @@ public enum ErrorCode {
     NO_PERMISSION_TO_DELETE(HttpStatus.FORBIDDEN.value(), "삭제할 권한이 없습니다."),
     ALREADY_JOINED(HttpStatus.BAD_REQUEST.value(), "이미 가입한 그룹입니다."),
     STUDYROOM_NOT_FOUND(HttpStatus.NOT_FOUND.value(),"스터디룸을 찾을 수 없습니다."),
+    MAX_PARTICIPANTS(HttpStatus.BAD_REQUEST.value(), "최대 인원을 초과했습니다."),
     ;
 
     private final int status;
