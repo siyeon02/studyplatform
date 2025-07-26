@@ -1,6 +1,7 @@
 package com.project.studyplatform.controller.studyroom;
 
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
@@ -33,5 +34,12 @@ public class StudyRoomController {
     public ResponseEntity<ApiResult<StudyRoomEditRespDto>> editStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomEditReqDto reqDto) {
         Member member = userDetails.getUser();
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.editStudyRoom(member.getId(), studyroomId, reqDto)));
+    }
+
+    @DeleteMapping("/{studyroomId}")
+    public ResponseEntity<ApiResult<Void>> deleteStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomDeleteReqDto reqDto){
+        Member member = userDetails.getUser();
+        studyRoomService.deleteStudyRoom(member.getId(), studyroomId, reqDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(null));
     }
 }

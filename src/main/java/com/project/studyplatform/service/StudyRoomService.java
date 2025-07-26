@@ -2,9 +2,11 @@ package com.project.studyplatform.service;
 
 import com.project.studyplatform.controller.group.dto.response.GroupEditRespDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomCreateReqDto;
+import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomDeleteReqDto;
 import com.project.studyplatform.controller.studyroom.dto.request.StudyRoomEditReqDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomCreateRespDto;
 import com.project.studyplatform.controller.studyroom.dto.response.StudyRoomEditRespDto;
+import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.domain.member.repository.MemberRepository;
 import com.project.studyplatform.domain.studyroom.StudyRoom;
@@ -67,5 +69,16 @@ public class StudyRoomService {
         studyRoom.modify(reqDto.getStudyRoomName(), reqDto.getDescription(), reqDto.getPassword(), reqDto.getMaxParticipants());
 
         return new StudyRoomEditRespDto(studyRoom);
+    }
+
+    public void deleteStudyRoom(Long memberId, Long studyroomId, StudyRoomDeleteReqDto reqDto) {
+        StudyRoom studyRoom = studyRoomRepository.findById(studyroomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDYROOM_NOT_FOUND));
+
+        if (!memberId.equals(studyRoom.getManager().getId())) {
+            throw new BusinessException(ErrorCode.NO_PERMISSION_TO_DELETE);
+        }
+
+        studyRoomRepository.delete(studyRoom);
     }
 }
