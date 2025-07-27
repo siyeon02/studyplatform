@@ -13,6 +13,7 @@ public class GroupInfoRespDto {
     private Long groupId;
     private Long managerId;
     private List<Long> memberIds;
+    private List<String> memberNicknames;
     private String groupName;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -21,6 +22,7 @@ public class GroupInfoRespDto {
         this.groupId = group.getId();
         this.managerId = group.getManager().getId();
         this.memberIds = group.getGroupMembers().stream().map(groupMember -> groupMember.getMember().getId()).collect(Collectors.toList());
+        this.memberNicknames = group.getGroupMembers().stream().map(groupMember -> groupMember.getMember().getNickname()).collect(Collectors.toList());
         this.groupName = group.getName();
         this.createdAt = group.getCreatedAt();
         this.modifiedAt = group.getModifiedAt();
