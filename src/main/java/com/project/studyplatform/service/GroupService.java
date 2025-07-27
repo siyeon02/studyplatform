@@ -35,6 +35,7 @@ public class GroupService {
         Group group = Group.builder()
                 .name(reqDto.getGroupName())
                 .manager(member)
+                .maxParticipants(reqDto.getMaxParticipants())
                 .build();
 
         group.addGroupMember(member);
@@ -58,7 +59,7 @@ public class GroupService {
             throw new BusinessException(ErrorCode.NO_PERMISSION_TO_EDIT);
         }
 
-        group.modify(reqDto.getGroupName());
+        group.modify(reqDto.getGroupName(), reqDto.getMaxParticipants());
 
         return new GroupEditRespDto(group, member);
 

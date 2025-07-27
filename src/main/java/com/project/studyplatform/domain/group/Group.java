@@ -28,14 +28,18 @@ public class Group extends BaseEntity {
     @JoinColumn(name = "manager_id")
     private Member manager;
 
+    @Column
+    private Integer maxParticipants;
+
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
     @Builder
-    public Group(Long id, String name, Member manager) {
+    public Group(Long id, String name, Member manager, Integer maxParticipants) {
         this.id = id;
         this.name = name;
         this.manager = manager;
+        this.maxParticipants = maxParticipants;
     }
 
     public void addGroupMember(Member member) {
@@ -44,7 +48,8 @@ public class Group extends BaseEntity {
         member.getGroupMembers().add(gm);
     }
 
-    public void modify(String groupName) {
+    public void modify(String groupName, Integer maxParticipants) {
         this.name = groupName;
+        this.maxParticipants = maxParticipants;
     }
 }

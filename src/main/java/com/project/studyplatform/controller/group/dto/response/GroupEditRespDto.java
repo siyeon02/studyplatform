@@ -11,6 +11,7 @@ public class GroupEditRespDto {
     private Long groupId;
     private Long managerId;
     private String groupName;
+    private Integer maxParticipants;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -18,6 +19,7 @@ public class GroupEditRespDto {
         this.groupId = group.getId();
         this.managerId = member.getId();
         this.groupName = group.getName();
+        this.maxParticipants = group.getMaxParticipants();
         this.createdAt = group.getCreatedAt();
         this.modifiedAt = group.getModifiedAt();
     }

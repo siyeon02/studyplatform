@@ -12,12 +12,14 @@ public class GroupCreateRespDto {
     private Long groupId;
     private Long managerId;
     private String groupName;
+    private Integer maxParticipants;
     private LocalDateTime createdAt;
 
     public GroupCreateRespDto(Group group, Member member) {
      this.groupId = group.getId();
      this.managerId = member.getId();
      this.groupName = group.getName();
+     this.maxParticipants = group.getMaxParticipants();
      this.createdAt = group.getCreatedAt();
     }
 }
