@@ -15,6 +15,7 @@ public class GroupInfoRespDto {
     private List<Long> memberIds;
     private List<String> memberNicknames;
     private String groupName;
+    private Integer maxParticipants;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -24,6 +25,7 @@ public class GroupInfoRespDto {
         this.memberIds = group.getGroupMembers().stream().map(groupMember -> groupMember.getMember().getId()).collect(Collectors.toList());
         this.memberNicknames = group.getGroupMembers().stream().map(groupMember -> groupMember.getMember().getNickname()).collect(Collectors.toList());
         this.groupName = group.getName();
+        this.maxParticipants = group.getMaxParticipants();
         this.createdAt = group.getCreatedAt();
         this.modifiedAt = group.getModifiedAt();
     }

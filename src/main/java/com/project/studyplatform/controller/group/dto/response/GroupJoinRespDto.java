@@ -12,6 +12,7 @@ public class GroupJoinRespDto {
     private Long managerId;
     private Long memberId;
     private String groupName;
+    private Integer maxParticipants;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -20,6 +21,7 @@ public class GroupJoinRespDto {
         this.managerId = group.getManager().getId();
         this.memberId = member.getId();
         this.groupName = group.getName();
+        this.maxParticipants = group.getMaxParticipants();
         this.createdAt = group.getCreatedAt();
         this.modifiedAt = group.getModifiedAt();
     }
