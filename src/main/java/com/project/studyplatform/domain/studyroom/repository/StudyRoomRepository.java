@@ -12,4 +12,5 @@ public interface StudyRoomRepository extends JpaRepository<StudyRoom, Long> {
     @Query("SELECT sr FROM StudyRoomUser sru JOIN sru.studyRoom sr WHERE sru.member = :member")
     List<StudyRoom> findStudyRoomsByMember(@Param("member") Member member);
 
+    List<StudyRoom> findByNameContaining(String name);
 }

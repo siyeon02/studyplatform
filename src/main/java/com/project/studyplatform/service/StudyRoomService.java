@@ -1,7 +1,9 @@
 package com.project.studyplatform.service;
 
+import com.project.studyplatform.controller.group.dto.response.GroupSearchRespDto;
 import com.project.studyplatform.controller.studyroom.dto.request.*;
 import com.project.studyplatform.controller.studyroom.dto.response.*;
+import com.project.studyplatform.domain.group.Group;
 import com.project.studyplatform.domain.member.Member;
 import com.project.studyplatform.domain.member.repository.MemberRepository;
 import com.project.studyplatform.domain.studyroom.StudyRoom;
@@ -143,6 +145,13 @@ public class StudyRoomService {
 
         return studyRoomList.stream()
                 .map(AllStudyRoomInfoRespDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudyRoomSearchRespDto> searchStudyRooms(String name) {
+        List<StudyRoom> studyRooms = studyRoomRepository.findByNameContaining(name);
+        return studyRooms.stream()
+                .map(StudyRoomSearchRespDto::new)
                 .collect(Collectors.toList());
     }
 }

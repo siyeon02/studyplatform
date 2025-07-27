@@ -59,4 +59,10 @@ public class StudyRoomController {
         List<AllStudyRoomInfoRespDto> studyRoomList = studyRoomService.retrieveAllStudyRooms(member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomList));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResult<List<StudyRoomSearchRespDto>>> searchStudyRooms(@RequestParam("name") String name) {
+        List<StudyRoomSearchRespDto> result = studyRoomService.searchStudyRooms(name);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(result));
+    }
 }
