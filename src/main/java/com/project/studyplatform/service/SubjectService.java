@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class SubjectService {
     private final MemberRepository memberRepository;
     private final SubjectRepository subjectRepository;
 
+    @Transactional
     public SubjectCreateRespDto createSubject(Long memberId, SubjectCreateReqDto reqDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->{
@@ -47,6 +49,7 @@ public class SubjectService {
 
     }
 
+    @Transactional
     public SubjectEditRespDto editSubject(Long memberId, Long subjectId, SubjectEditReqDto reqDto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->{
@@ -67,6 +70,7 @@ public class SubjectService {
 
     }
 
+    @Transactional
     public void deleteSubject(Long userId, Long subjectId) {
 
         Subject subject = subjectRepository.findById(subjectId)

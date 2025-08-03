@@ -2,10 +2,14 @@ package com.project.studyplatform.domain.member;
 
 
 import com.project.studyplatform.domain.BaseEntity;
+import com.project.studyplatform.domain.groupmember.GroupMember;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -30,7 +34,11 @@ public class Member extends BaseEntity {
     private String email;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 50)
     private Status status;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GroupMember> groupMembers = new ArrayList<>();
 
 
     @Builder
