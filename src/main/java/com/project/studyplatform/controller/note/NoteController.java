@@ -61,4 +61,5 @@ public class NoteController {
         List<AllNoteInfoRespDto> noteList =  noteService.retrieveAllNotes(member.getId());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(noteList));
     }
+
 }
