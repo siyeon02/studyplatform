@@ -7,6 +7,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class StudyRoomJoinReqDto {
-    @NotNull
     private Long memberId;
 }

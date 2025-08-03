@@ -35,6 +35,7 @@ public class Member extends BaseEntity {
     private String email;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(length = 50)
     private Status status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

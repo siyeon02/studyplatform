@@ -123,7 +123,7 @@ public class GroupService {
                     throw new EntityNotFoundException("사용자를 찾을 수 없습니다.(memberId=" + memberId + ")");
                 });
 
-        List<Group> groupList = groupRepository.findGroupsByMember(member);
+        List<Group> groupList = groupRepository.findAllGroupsByMember(member);
 
         return groupList.stream()
                 .map(AllGroupInfoRespDto::new)
