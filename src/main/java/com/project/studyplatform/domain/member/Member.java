@@ -3,6 +3,7 @@ package com.project.studyplatform.domain.member;
 
 import com.project.studyplatform.domain.BaseEntity;
 import com.project.studyplatform.domain.groupmember.GroupMember;
+import com.project.studyplatform.domain.studyroom.StudyRoomUser;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudyRoomUser> studyRoomUsers = new ArrayList<>();
 
     @Builder
     public Member(String name, String nickname, String password, String email, Status status) {
