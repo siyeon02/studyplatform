@@ -48,6 +48,7 @@ public class NoteService {
         return new NoteCreateRespDto(savedNote, member);
     }
 
+    @Transactional
     public NoteEditRespDto editNote(Long memberId, Long noteId, NoteEditReqDto dto) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->{
