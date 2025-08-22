@@ -50,9 +50,9 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<ApiResult<GroupInfoRespDto>> retrieveGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId, @Valid @RequestBody GroupInfoReqDto reqDto){
+    public ResponseEntity<ApiResult<GroupInfoRespDto>> retrieveGroup(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long groupId){
         Member member = userDetails.getUser();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.retrieveGroup(member.getId(), groupId, reqDto)));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(groupService.retrieveGroup(member.getId(), groupId)));
     }
 
     @GetMapping("/all")

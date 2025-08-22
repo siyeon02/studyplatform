@@ -78,7 +78,7 @@ public class GroupService {
     }
 
 
-    public GroupInfoRespDto retrieveGroup(Long memberId, Long groupId, GroupInfoReqDto reqDto) {
+    public GroupInfoRespDto retrieveGroup(Long memberId, Long groupId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
