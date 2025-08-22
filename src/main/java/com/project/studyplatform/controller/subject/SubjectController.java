@@ -47,9 +47,9 @@ public class SubjectController {
     }
 
     @GetMapping("/subjects/{subjectId}")
-    public ResponseEntity<ApiResult<SubjectInfoRespDto>> retrieveSubject(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long subjectId, @Valid @RequestBody SubjectInfoReqDto reqDto){
+    public ResponseEntity<ApiResult<SubjectInfoRespDto>> retrieveSubject(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long subjectId){
         Member member = userDetails.getUser();
-        return ResponseEntity.status((HttpStatus.OK)).body(ApiResult.success(subjectService.retrieveSubject(member.getId(), subjectId, reqDto)));    }
+        return ResponseEntity.status((HttpStatus.OK)).body(ApiResult.success(subjectService.retrieveSubject(member.getId(), subjectId)));    }
 
 
     @GetMapping("/subjects/all")

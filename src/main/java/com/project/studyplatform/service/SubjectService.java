@@ -79,7 +79,7 @@ public class SubjectService {
         subjectRepository.delete(subject);
     }
 
-    public SubjectInfoRespDto retrieveSubject(Long memberId, Long subjectId, SubjectInfoReqDto reqDto) {
+    public SubjectInfoRespDto retrieveSubject(Long memberId, Long subjectId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(()->{
                     log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);
