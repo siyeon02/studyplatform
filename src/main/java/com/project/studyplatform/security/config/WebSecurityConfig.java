@@ -58,9 +58,17 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedOrigins(List.of("http://125.184.62.115:5173"));
+
+        // 허용할 Origin을 지정
+        configuration.setAllowedOrigins(List.of(
+                "https://d1r6jnz15g50df.cloudfront.net",
+                "http://localhost:5173",// 로컬 개발용 필요 시
+                "http://teststudyplatform.s3-website.ap-northeast-2.amazonaws.com"
+        ));
+        // 또는 CloudFront 커스텀 도메인을 쓰게 되면 여기에 추가
+        //configuration.setAllowedOriginPatterns(List.of("*")); // 테스트용 전체 허용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 

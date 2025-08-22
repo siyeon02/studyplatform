@@ -6,8 +6,10 @@ import lombok.Getter;
 @Getter
 public class SignupRespDto {
     private final Long userId;
+    private final String accessToken;
 
-    public SignupRespDto(Member member) {
+    public SignupRespDto(Member member, String accessToken) {
         this.userId = member.getId();
+        this.accessToken = accessToken;
     }
 }

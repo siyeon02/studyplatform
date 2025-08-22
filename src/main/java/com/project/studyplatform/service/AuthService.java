@@ -37,7 +37,8 @@ public class AuthService {
                 .build();
 
         Member savedMember = memberRepository.save(member);
+        String accessToken = jwtUtil.createToken(savedMember.getId(), savedMember.getEmail());
 
-        return new SignupRespDto(savedMember);
+        return new SignupRespDto(savedMember, accessToken);
     }
 }

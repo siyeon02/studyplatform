@@ -1,7 +1,6 @@
 package com.project.studyplatform.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.studyplatform.ex.BusinessException;
 import com.project.studyplatform.ex.ErrorCode;
 import com.project.studyplatform.ex.ErrorRespDto;
 import com.project.studyplatform.security.service.UserDetailsServiceImpl;
@@ -20,9 +19,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j(topic = "로그인 후 토큰 검증 인가")
 
@@ -32,91 +33,185 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AntPathMatcher matcher = new AntPathMatcher();
+
+    private static final List<String> PUBLIC_PATTERNS = List.of(
+            "/api/auth/**" // signup, login 등
+
+    );
+
+    // ✅ 공개 경로 & 프리플라이트는 아예 필터 적용 안 함
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) return true;
+        String uri = request.getRequestURI();
+        for (String p : PUBLIC_PATTERNS) {
+            if (matcher.match(p, uri)) return true;
+        }
+        return false;
+    }
+
 
     public JwtAuthorizationFilter(final JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
     }
 
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+//        log.info("🔍 [JWT 필터 진입] {} {}", request.getMethod(), request.getRequestURI());
+//        log.info("🔍 [Authorization 헤더] {}", request.getHeader("Authorization"));
+//        HttpServletRequest httpRequest = request;
+//        HttpServletResponse httpResponse = response;
+//
+//        // JWT 검증 로직 수행
+//        String bearerJwt = httpRequest.getHeader("Authorization");
+//
+//        // 토큰 없음
+//        if (bearerJwt == null) {
+//            chain.doFilter(request, response);
+//            return;
+//        }
+//
+//        String jwt = jwtUtil.substringToken(bearerJwt);
+//        log.info("토큰 = {}", jwt);
+//
+//        // 유효하지 않은 토큰
+//        if (!jwtUtil.verifyAccessToken(jwt)) {
+//            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
+//            return;
+//        }
+//
+//        try {
+//            // JWT 유효성 검사와 claims 추출
+//            Claims claims = jwtUtil.parseToken(jwt);
+//
+//            log.info("JWT Claims: {}", claims);
+//
+//            //잘못된 토큰
+//            if (claims == null) {
+//                sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_FORMAT, request);
+//                return;
+//            }
+//
+//            setAuthentication((String) claims.get("email"));
+//            chain.doFilter(request, response);
+//
+//        } catch (SecurityException | MalformedJwtException e) {
+//            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
+//            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
+//        } catch (ExpiredJwtException e) {
+//            log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
+//            sendErrorResponse(httpResponse, ErrorCode.EXPIRED_TOKEN, request);
+//        } catch (UnsupportedJwtException e) {
+//            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
+//            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_TYPE, request);
+//        } catch (Exception e) {
+//            log.error("Internal server error", e);
+//            sendErrorResponse(httpResponse, ErrorCode.INTERNAL_SERVER_ERROR, request);
+//        }
+//    }
+//
+//    // 인증 처리
+//    public void setAuthentication(String email) {
+//        SecurityContext context = SecurityContextHolder.createEmptyContext();
+//        Authentication authentication = createAuthentication(email);
+//        context.setAuthentication(authentication);
+//        SecurityContextHolder.setContext(context);
+//
+//        log.info("인증처리완료");
+//    }
+//
+//    // 인증 객체 생성
+//    private Authentication createAuthentication(String email) {
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+//        log.info("객체생성" + userDetails);
+//        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//    }
+//
+//
+//    public void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode, HttpServletRequest request) throws IOException {
+//        // JSON 형태로 응답 생성
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.setStatus(errorCode.getStatus());
+//
+//        String json = objectMapper.writeValueAsString(new ErrorRespDto(errorCode, request.getRequestURI()));
+//        response.getWriter().write(json);
+//    }
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        log.info("🔍 [JWT 필터 진입] {} {}", request.getMethod(), request.getRequestURI());
-        log.info("🔍 [Authorization 헤더] {}", request.getHeader("Authorization"));
-        HttpServletRequest httpRequest = request;
-        HttpServletResponse httpResponse = response;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
 
-        // JWT 검증 로직 수행
-        String bearerJwt = httpRequest.getHeader("Authorization");
+        String auth = request.getHeader("Authorization");
+        log.info("🔍 [JWT 인가필터] {} {} | Authorization={}", request.getMethod(), request.getRequestURI(), auth);
 
-        // 토큰 없음
-        if (bearerJwt == null) {
+        // ✅ 헤더가 없거나 Bearer 접두어가 아니면 인증 시도 없이 그대로 통과
+        if (auth == null || !auth.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
-        String jwt = jwtUtil.substringToken(bearerJwt);
-        log.info("토큰 = {}", jwt);
-
-        // 유효하지 않은 토큰
-        if (!jwtUtil.verifyAccessToken(jwt)) {
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
-            return;
-        }
-
+        String jwt = jwtUtil.substringToken(auth); // "Bearer " 제거
         try {
-            // JWT 유효성 검사와 claims 추출
-            Claims claims = jwtUtil.parseToken(jwt);
-
-            log.info("JWT Claims: {}", claims);
-
-            //잘못된 토큰
-            if (claims == null) {
-                sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_FORMAT, request);
+            // ✅ 토큰 유효성 검사 실패 시에도 '차단하지 않고' 통과
+            if (!jwtUtil.verifyAccessToken(jwt)) {
+                log.warn("JWT 검증 실패(verifyAccessToken=false) → 인증 미설정으로 통과");
+                chain.doFilter(request, response);
                 return;
             }
 
-            setAuthentication((String) claims.get("email"));
+            Claims claims = jwtUtil.parseToken(jwt);
+            if (claims == null) {
+                log.warn("JWT claims null → 인증 미설정으로 통과");
+                chain.doFilter(request, response);
+                return;
+            }
+
+            String email = (String) claims.get("email");
+            if (email == null || email.isBlank()) {
+                log.warn("JWT에 email 클레임 없음 → 인증 미설정으로 통과");
+                chain.doFilter(request, response);
+                return;
+            }
+
+            // ✅ 유효하면 인증 컨텍스트 세팅
+            setAuthentication(email);
             chain.doFilter(request, response);
 
-        } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_SIGNATURE, request);
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.EXPIRED_TOKEN, request);
+            log.warn("만료된 JWT → 인증 미설정으로 통과", e);
+            chain.doFilter(request, response);
+        } catch (SecurityException | MalformedJwtException e) {
+            log.warn("유효하지 않은 JWT 서명/형식 → 인증 미설정으로 통과", e);
+            chain.doFilter(request, response);
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
-            sendErrorResponse(httpResponse, ErrorCode.INVALID_TOKEN_TYPE, request);
+            log.warn("지원되지 않는 JWT → 인증 미설정으로 통과", e);
+            chain.doFilter(request, response);
         } catch (Exception e) {
-            log.error("Internal server error", e);
-            sendErrorResponse(httpResponse, ErrorCode.INTERNAL_SERVER_ERROR, request);
+            log.error("JWT 처리 중 예외 → 인증 미설정으로 통과", e);
+            chain.doFilter(request, response);
         }
     }
 
-    // 인증 처리
-    public void setAuthentication(String email) {
+    // ✅ 인증 처리 (SecurityContext에 유저 저장)
+    private void setAuthentication(String email) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(email);
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
-
-        log.info("인증처리완료");
+        log.info("✅ 인증 컨텍스트 세팅 완료: {}", email);
     }
 
-    // 인증 객체 생성
-    private Authentication createAuthentication(String email) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        log.info("객체생성" + userDetails);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
-
-
-    public void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode, HttpServletRequest request) throws IOException {
-        // JSON 형태로 응답 생성
+    // (선택) 필요하면 커스텀 에러 바디를 내려야 하는 경우에만 사용
+    @SuppressWarnings("unused")
+    private void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode, HttpServletRequest request) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(errorCode.getStatus());
-
         String json = objectMapper.writeValueAsString(new ErrorRespDto(errorCode, request.getRequestURI()));
         response.getWriter().write(json);
     }
