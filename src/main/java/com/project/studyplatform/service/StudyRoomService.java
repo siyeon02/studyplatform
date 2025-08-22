@@ -120,7 +120,7 @@ public class StudyRoomService {
 
     }
 
-    public StudyRoomInfoRespDto retrieveStudyRoom(Long memberId, Long studyroomId, StudyRoomInfoReqDto reqDto) {
+    public StudyRoomInfoRespDto retrieveStudyRoom(Long memberId, Long studyroomId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.warn("사용자를 찾을 수 없습니다. memberId={}", memberId);

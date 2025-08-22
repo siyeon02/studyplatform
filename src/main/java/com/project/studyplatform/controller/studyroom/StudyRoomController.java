@@ -48,9 +48,9 @@ public class StudyRoomController {
     }
 
     @GetMapping("{studyroomId}")
-    public ResponseEntity<ApiResult<StudyRoomInfoRespDto>> retrieveStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId, @Valid @RequestBody StudyRoomInfoReqDto reqDto) {
+    public ResponseEntity<ApiResult<StudyRoomInfoRespDto>> retrieveStudyRoom(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long studyroomId) {
         Member member = userDetails.getUser();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.retrieveStudyRoom(member.getId(), studyroomId, reqDto)));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success(studyRoomService.retrieveStudyRoom(member.getId(), studyroomId)));
     }
 
     @GetMapping("/all")
